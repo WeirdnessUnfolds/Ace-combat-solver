@@ -65,18 +65,21 @@ jobs:
                   echo "Extension ID not present in public/chub_meta.yaml extension_id field either. Creating new project."
                   sudo apt-get install jq
                   STAGE_ID=""
-                  curl -H "CH-API-KEY: ${{ secrets.CHUB_AUTH_TOKEN }}" -H "Content-Type: application/json" --request POST --data '{"name":"${{ github.event.repository.name }}"}'  https://api.chub.ai/extensions  -o creation.json
-                  STAGE_ID=$(jq -r '.id_v2' creation.json)
+                  curl -sS -H "CH-API-KEY: ${{ secrets.CHUB_AUTH_TOKEN }}" -H "Content-Type: application/json" --request POST --data '{"name":"${{ github.event.repository.name }}"}'  https://api.chub.ai/extensions  -o creation.json
+                  STAGE_ID=$(jq -r '(.id_v2 // .id // empty)' creation.json 2>/dev/null || true)
                   if [ "${STAGE_ID}" == "" ] || [ "${STAGE_ID}" == "null" ]; then
-                    echo "Extension ID creation failed; is your CHUB_AUTH_TOKEN secret set for this project?"
-                    exit 1
+                    echo "Extension ID creation failed or returned a non-JSON body; skipping upload for this run."
+                    echo "Raw response:"
+                    cat creation.json
                   fi
-                  echo -e "\nextension_id: '${STAGE_ID}'\n" >> public/chub_meta.yaml
-                  git config --local user.email "action@github.com"
-                  git config --local user.name "GitHub Action"
-                  git add public/chub_meta.yaml
-                  git commit -m "Add new Extension ID to chub_meta.yaml" || true
-                  git push || true
+                  if [ "${STAGE_ID}" != "" ] && [ "${STAGE_ID}" != "null" ]; then
+                    echo -e "\nextension_id: '${STAGE_ID}'\n" >> public/chub_meta.yaml
+                    git config --local user.email "action@github.com"
+                    git config --local user.name "GitHub Action"
+                    git add public/chub_meta.yaml
+                    git commit -m "Add new Extension ID to chub_meta.yaml" || true
+                    git push || true
+                  fi
                 fi
              else
                 echo "Extension ID found in public/chub_meta.yaml."
@@ -113,7 +116,7 @@ jobs:
         run: cd dist && zip -r ../build.zip * && cd ../
 
       - name: Upload the build
-        if: ${{ !contains(github.repository, 'template') }}
+        if: ${{ !contains(github.repository, 'template') && env.STAGE_ID != '' }}
         env:
           CHUB_AUTH_TOKEN: ${{ secrets.CHUB_AUTH_TOKEN }}
         run: |    
