@@ -1,0 +1,45 @@
+.ace-resolver-settings .ace-resolver-note,
+.ace-resolver-settings .ace-resolver-help {
+    opacity: 0.8;
+    font-size: 0.92em;
+}
+
+.ace-resolver-settings .ace-resolver-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 12px;
+    margin: 10px 0;
+}
+
+.ace-resolver-settings .ace-resolver-grid label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.ace-resolver-settings input[type="number"] {
+    width: 4.5em;
+}
+
+.ace-resolver-settings input[type="range"] {
+    width: 100%;
+}
+
+.ace-resolver-settings select {
+    width: 100%;
+    margin-top: 4px;
+}
+
+.ace-resolver-settings .ace-resolver-last {
+    margin-top: 12px;
+    padding: 8px;
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 6px;
+}
+
+@media (max-width: 700px) {
+    .ace-resolver-settings .ace-resolver-grid {
+        grid-template-columns: 1fr;
+    }
+}

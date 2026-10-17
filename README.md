@@ -1,61 +1,134 @@
-![](demo.GIF)
+# Ace Narrative Resolver for SillyTavern
 
-# Stage Template for Chub
+A lightweight hidden narrative-resolution extension designed for Ace Combat-style roleplay.
 
-This is a template stage that does nothing, to be used as a base
-when developing stages. Please clone it [from GitHub](https://github.com/CharHubAI/stage-template) to use as a template.
+It watches the user's latest message for a risky physical, technical, cognitive, weapons, or piloting action. If one is detected, it rolls a result and injects a hidden mechanical instruction into the **outgoing generation prompt only**. The result is not written into normal chat history.
 
-# Overview
+## Outcomes
 
-A Stage is a software component written by other people that can be used within a chat with a language model. They are meant to add functionality like expression packs (showing a character's emotional state with a set of images), UIs for mini-games, special prompt handling, or even interacting with third-party APIs. If you're familiar with React and/or TypeScript, you can write a stage yourself.
+- **YES, AND...** — success plus an extra advantage.
+- **YES** — straightforward success.
+- **YES, BUT...** — the core action succeeds, but there is a meaningful complication or cost.
+- **NO** — ordinary failure.
+- **NO, AND...** — failure plus a serious new complication.
 
-### Stage Use Cases
-- Creating a UI for a world, character, or setting
-- Making RPGs and other multimedia experiences
-- Custom stat blocks that can do math and handle state correctly
-- Specific input/output handling in code to deal with quirks of a particular model
+## Abilities
 
-### Why develop a stage instead of making something from scratch?
-- **Intuitive Development:** The stages framework and platform were created with developers in mind from the ground up, resulting in as straightforward an interface as possible with a negligible learning curve. 
-- **Cross-Platform:** Stages are write once, run everywhere. When you commit, your stage is immediately built and available on the web, iOS and Android mobile devices, and the Vision Pro, with support for more platforms incoming. 
-- **Multimedia:** Language, imagery, audio, and everything else can add up to a half-dozen or more APIs and interfaces that need to be set up, tested, monitored. With a stage, a unified interface for all of it is built in.
-- **Audience Reach:** Many gaming and multimedia platforms ban GenAI content outright, or have userbases hostile to it. Chub has millions of people specifically here for generative AI.
-- **Peace of Mind:** It has become a trope for passion projects using OpenAI and other APIs to get destroyed by hostiles reverse engineering it into a free proxy. If developed as a stage, it's not your problem, and you can focus on what matters.
-- **Actively Developed Platform:** This is just the beginning. Scheduling, full VR/AR support, non-React implementations, and more are incoming.
+Scores are 0–5:
 
+- 0 — Untrained
+- 1 — Novice
+- 2 — Competent
+- 3 — Veteran
+- 4 — Elite
+- 5 — Ace
 
-# Meta -- But Why?
+Abilities:
 
-As far as why this has been created, I’m trying to go where the puck is going instead of where it is, and I think there’s a need for something like itch.io for generative AI where (1) developers don’t have to worry about integrations and devops and (2) there’s an audience of people that are already explicitly on the AI side of the pro/anti discussion.
+- **Airmanship** — aircraft handling, formation, navigation, takeoff/landing, terrain flight and recovery.
+- **Combat Maneuvering** — BFM, energy fighting, reversals, pursuit geometry, missile evasion and positional combat.
+- **Weapons** — aircraft weapons, firearms, explosives and attack timing.
+- **Situational Awareness** — visual/radar scan, danger detection, tracking and tactical awareness.
+- **Systems** — radar, ECM, sensors, computers, radios, countermeasures and damaged systems.
+- **Analysis** — tactical reasoning, prediction, geometry, routes and deduction.
+- **Intelligence** — engineering, technical knowledge, memory, repair and problem solving.
+- **Reflexes** — split-second reactions and sudden evasive actions.
+- **Composure** — focus and performance under fear, pressure or disorientation.
+- **Physique** — G tolerance, endurance, injury resistance, running, climbing, carrying and similar physical effort.
 
-This is basically in the early stages of “do developers want this?” with a fraction of what I want to do with it if the answer is yes. The current license is to prevent competing platforms, and if it turns out to be something there is strong interest in it would be going the way of itch where it’s not just commercial use allowed but explicitly a platform for indies to monetize through.
+There is deliberately **no social/charisma ability**. Dialogue, persuasion, romance, intimidation and ordinary social roleplay are left entirely to characterization and context.
 
-# Latest Documentation
+## Action Detection Sensitivity
 
-The latest documentation is at [https://docs.chub.ai/docs/stages](https://docs.chub.ai/docs/stages).
+The settings panel includes a 1–5 sensitivity slider:
 
-# Quickstart
+- **1 Very Low** — only strongly explicit actions normally trigger.
+- **2 Low** — conservative detection.
+- **3 Normal** — recommended default.
+- **4 High** — short or somewhat implied actions trigger more readily.
+- **5 Very High** — almost any matching action language may trigger.
 
-You'll need node@21.7.1 and yarn installed.
-Then, to get started:
+Sensitivity controls whether an action gets a resolution. It does **not** change success probability.
 
-``` 
-git clone https://github.com/CharHubAI/stage-template
-cd stage-template
-yarn install
-yarn dev
-```
+## Difficulty
 
-The class you'll need to fill out and implement is in src/Stage.tsx.
+The extension automatically estimates:
 
-When running locally, as there is no chat UI/running chat, src/TestRunner.tsx is run. This only runs in development.
-Please modify it to test whatever you need.
+- Routine
+- Standard
+- Hard
+- Extreme
 
-This project uses GitHub actions to update the stage in Chub on 
-commits to the main branch. For your project to do this,
-you'll need to get a stage auth token from [the api](https://api.chub.ai/openapi/swagger#/User%20Account/create_projects_token_account_tokens_projects_post).
+Danger markers such as missile saturation, damaged controls, tunnels/canyons, bad weather, injuries, multiple simultaneous threats and similar circumstances raise difficulty.
 
-Then in the GitHub project, go to Settings -> Secrets and Variables -> Actions ->
-Repository secrets -> New Repository Secret. Add the token with the name "CHUB_AUTH_TOKEN".
+The **Difficulty Bias** setting shifts automatic difficulty globally one step easier or harder.
 
-The use of an IDE like Intellij is very strongly recommended.
+## Regenerate / swipe behavior
+
+By default, **Reuse the same result on regenerate/swipe** is enabled. This prevents regenerating the prose from secretly rerolling a successful action into a failure or vice versa during the current browser session.
+
+Turn the option off if you intentionally want each regeneration to reroll.
+
+## Debug mode
+
+If **Show result as a temporary toast** is enabled, SillyTavern displays the ability, difficulty, d100 roll, target and outcome to you. The model still receives the hidden result automatically.
+
+With debug disabled, resolution is invisible unless you inspect the outgoing prompt.
+
+## Installing from GitHub
+
+SillyTavern installs third-party extensions directly from Git repositories.
+
+1. Create a GitHub repository.
+2. Put these files at the **repository root**:
+   - `manifest.json`
+   - `index.js`
+   - `settings.html`
+   - `style.css`
+   - `README.md`
+3. In SillyTavern, open **Extensions**.
+4. Choose **Install Extension**.
+5. Paste your repository URL.
+6. Install it for your user.
+7. Reload SillyTavern if requested.
+8. Open the Extensions settings panel and expand **Ace Narrative Resolver**.
+
+### Reusing the old Chub repository
+
+You can reuse your existing `Ace-combat-solver` repository. The important part is that `manifest.json` must be at the repository root. The old Chub `src/`, `public/` and workflow files are no longer required for SillyTavern.
+
+## How it works
+
+SillyTavern supports a `generate_interceptor` hook. The extension:
+
+1. Finds the last user message in the generation context.
+2. Removes quoted dialogue from action detection so ordinary speech does not trigger checks.
+3. Scores the remaining prose against the ten abilities.
+4. Selects the strongest ability and, where appropriate, one supporting ability.
+5. Estimates difficulty.
+6. Rolls d100 in the browser.
+7. Creates one of the five narrative outcomes.
+8. Inserts a hidden narrator/system-style instruction immediately before the user's action **in the generation-only prompt copy**.
+9. The character model narrates the consequence without being told to display stats or dice.
+
+The resolver handles one dominant risky action per user message. If a message contains several independent actions, the most strongly detected action is the one resolved.
+
+## Probability model
+
+Target number:
+
+`45 + primary×8 + support×2 − difficulty×10`
+
+clamped from 15 to 90.
+
+- Very low rolls can become **YES, AND...**
+- Rolls at/below target become **YES**
+- Up to 20 above target becomes **YES, BUT...**
+- Higher rolls become **NO**
+- 97–100 always becomes **NO, AND...**
+
+## Compatibility
+
+Designed for recent SillyTavern releases using the documented UI-extension and `generate_interceptor` APIs. The manifest declares SillyTavern 1.17.0 as its minimum version.
+
+No server plugin, external service, Chub API, or API key is required by this extension itself.

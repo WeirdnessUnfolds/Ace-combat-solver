@@ -1,0 +1,63 @@
+<div id="ace_resolver_settings" class="ace-resolver-settings">
+  <div class="inline-drawer">
+    <div class="inline-drawer-toggle inline-drawer-header">
+      <b>Ace Narrative Resolver</b>
+      <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+    </div>
+    <div class="inline-drawer-content">
+      <p class="ace-resolver-note">
+        Hidden action resolution for Ace Combat-style roleplay. Scores: 0 Untrained, 1 Novice, 2 Competent, 3 Veteran, 4 Elite, 5 Ace.
+      </p>
+
+      <label class="checkbox_label" for="ace_resolver_enabled">
+        <input id="ace_resolver_enabled" type="checkbox" />
+        <span>Enable resolver</span>
+      </label>
+
+      <div class="ace-resolver-grid">
+        <label>Airmanship <input id="ace_resolver_airmanship" type="number" min="0" max="5" step="1" /></label>
+        <label>Combat Maneuvering <input id="ace_resolver_combat" type="number" min="0" max="5" step="1" /></label>
+        <label>Weapons <input id="ace_resolver_weapons" type="number" min="0" max="5" step="1" /></label>
+        <label>Situational Awareness <input id="ace_resolver_awareness" type="number" min="0" max="5" step="1" /></label>
+        <label>Systems <input id="ace_resolver_systems" type="number" min="0" max="5" step="1" /></label>
+        <label>Analysis <input id="ace_resolver_analysis" type="number" min="0" max="5" step="1" /></label>
+        <label>Intelligence <input id="ace_resolver_intelligence" type="number" min="0" max="5" step="1" /></label>
+        <label>Reflexes <input id="ace_resolver_reflexes" type="number" min="0" max="5" step="1" /></label>
+        <label>Composure <input id="ace_resolver_composure" type="number" min="0" max="5" step="1" /></label>
+        <label>Physique <input id="ace_resolver_physique" type="number" min="0" max="5" step="1" /></label>
+      </div>
+
+      <hr />
+
+      <label for="ace_resolver_sensitivity">
+        <span>Action Detection Sensitivity: <b id="ace_resolver_sensitivity_value">3</b></span>
+        <input id="ace_resolver_sensitivity" type="range" min="1" max="5" step="1" />
+      </label>
+      <div class="ace-resolver-help">1 = very strict, 3 = normal, 5 = eager to resolve implied actions.</div>
+
+      <label for="ace_resolver_difficulty">
+        <span>Difficulty Bias</span>
+        <select id="ace_resolver_difficulty" class="text_pole">
+          <option value="-1">Easier</option>
+          <option value="0">Normal</option>
+          <option value="1">Harder</option>
+        </select>
+      </label>
+
+      <label class="checkbox_label" for="ace_resolver_reuse">
+        <input id="ace_resolver_reuse" type="checkbox" />
+        <span>Reuse the same result on regenerate/swipe</span>
+      </label>
+
+      <label class="checkbox_label" for="ace_resolver_debug">
+        <input id="ace_resolver_debug" type="checkbox" />
+        <span>Show result as a temporary toast (debug)</span>
+      </label>
+
+      <div class="ace-resolver-last">
+        <b>Last resolution:</b>
+        <span id="ace_resolver_last_result">None</span>
+      </div>
+    </div>
+  </div>
+</div>

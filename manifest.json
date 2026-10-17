@@ -1,0 +1,18 @@
+{
+  "display_name": "Ace Narrative Resolver",
+  "loading_order": 50,
+  "requires": [],
+  "optional": [],
+  "dependencies": [],
+  "js": "index.js",
+  "css": "style.css",
+  "author": "OpenAI / user-configurable",
+  "version": "1.0.0",
+  "homePage": "",
+  "auto_update": false,
+  "minimum_client_version": "1.17.0",
+  "generate_interceptor": "AceNarrativeResolver_interceptGeneration",
+  "hooks": {
+    "activate": "onActivate"
+  }
+}
